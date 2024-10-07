@@ -7,28 +7,26 @@ const date = document.getElementById("date")
 
 let mode = "time"
 
-setInterval(update, 1000)
-
-update()
+function bindMode(name) {
+  return function () {
+    mode = name;
+    update();
+  }
+}
 
 function update() {
   output.textContent = render(mode)
 }
 
-time.onclick = () => { 
-  mode = "time"
-  update()
-}
+time.onclick = bindMode("time")
 
-date.onclick = () => {
-  mode = "date"
-  update()
-}
+date.onclick = bindMode("date")
 
-full.onclick = () => {
-  mode = "full"
-  update()
-}
+full.onclick = bindMode("full")
+
+setInterval(update, 100)
+
+update()
 
 function render(type = "time") {
   const now = new Date();
@@ -37,6 +35,6 @@ function render(type = "time") {
   } else if (type === "full") {
     return now.toLocaleDateString() + " " + now.toLocaleTimeString()
   } else if (type === "time"){
-    return now.toLocaleTimeString()
+    return now.toLocaleTimeString().replace("AM", "").replace(" ", "").replace("PM", "") + "." + now.getMilliseconds()
   }
 }
